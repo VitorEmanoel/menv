@@ -5,7 +5,8 @@ import (
 )
 
 type Environments struct {
-	Token string `name:"TOKEN" required:"true"`
+	Token 	string 		`name:"TOKEN" required:"true"`
+	Test	string		`name:"TEST"`
 }
 
 func TestSimplesEnvironmentVariable(t *testing.T) {
@@ -16,5 +17,9 @@ func TestSimplesEnvironmentVariable(t *testing.T) {
 	}
 	if variables.Token != "TOKEN_TEST" {
 		t.Errorf("Invalid values, want TOKEN_TEST variables.Token is %s", variables.Token)
+	}
+
+	if variables.Test != "test" {
+		t.Errorf("Invalid values, want test variables.Token is %s", variables.Test)
 	}
 }

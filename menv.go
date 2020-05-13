@@ -85,6 +85,7 @@ func (l *LoaderContext) loadEnvironmentFile() error {
 	}
 	var contentStr = string(content)
 	contentStr = strings.ReplaceAll(contentStr, "\t", "")
+	contentStr = strings.ReplaceAll(contentStr, "\r", "")
 	var contents = strings.Split(contentStr, "\n")
 	for _, item := range contents {
 		var splitedItem = strings.Split(item, "=")
