@@ -95,7 +95,9 @@ func (l *LoaderContext) loadEnvironmentFile() error {
 		var value = splitedItem[1]
 		value = strings.ReplaceAll(value, "\"", "")
 		value = strings.ReplaceAll(value, "'", "")
-		os.Setenv(splitedItem[0], value)
+		if variable := os.Getenv(splitedItem[0]); variable == "" {
+			os.Setenv(splitedItem[0], value)
+		}
 	}
 	return nil
 }
