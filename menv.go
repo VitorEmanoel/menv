@@ -34,9 +34,10 @@ type LoaderContext struct {
 
 // Environment represent environment variables
 type Environment struct {
-	Name       string
-	Required   bool
-	FieldValue reflect.Value
+	Name        string
+	Required    bool
+	FieldValue  reflect.Value
+	Default     *string
 }
 
 // Parse load all profile data
@@ -60,7 +61,7 @@ func (l *LoaderContext) Parse(profile interface{}) EnvironmentLoader {
 		if !profileValue.Field(i).CanSet() {
 			continue
 		}
-		var name = field.Tag.Get("name")
+		var name = field.Tag.Get("env")
 		if name == "" {
 			continue
 		}
@@ -71,6 +72,9 @@ func (l *LoaderContext) Parse(profile interface{}) EnvironmentLoader {
 		}
 		if required, ok := field.Tag.Lookup("required"); ok && required == "true" {
 			localEnv.Required = true
+		}
+		if defaultValue, ok := field.Tag.Lookup("default"); ok {
+			localEnv.Default = &defaultValue
 		}
 		localEnv.FieldValue = profileValue.Field(i)
 		l.Environments = append(l.Environments, localEnv)
@@ -110,8 +114,13 @@ func (l *LoaderContext) Load() error {
 	}
 	for _, environment := range l.Environments {
 		var environmentValue = os.Getenv(environment.Name)
-		if environmentValue == "" && environment.Required {
-			return fmt.Errorf("required variable %s not found", environment.Name)
+		if environmentValue == "" {
+			if environment.Required && environment.Default == nil {
+				return fmt.Errorf("required variable %s not found", environment.Name)
+			}
+			if environment.Default != nil {
+				environmentValue = *environment.Default
+			}
 		}
 		environment.FieldValue.SetString(environmentValue)
 	}

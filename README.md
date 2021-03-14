@@ -7,7 +7,7 @@ Use this lib for load and validate environment variables.
 ## Install
 
 ```bash
-    go get -u github.com/VitorEmanoel/menv
+go get -u github.com/VitorEmanoel/menv
 ```
 
 ## Example
@@ -21,7 +21,7 @@ import (
 )
 
 type Variables struct {
-    Token   string  `name:"TOKEN" required:"true"`
+    Token   string  `env:"TOKEN" required:"true" default:"DEFAULT_TOKEN"`
 }
 
 func main() {
